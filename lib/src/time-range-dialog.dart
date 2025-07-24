@@ -209,6 +209,7 @@ class TimeRangePicker extends StatefulWidget {
 
   final Widget? backgroundWidget;
   final int ticks;
+  final int? interTicks;
 
   final double ticksOffset;
 
@@ -256,6 +257,7 @@ class TimeRangePicker extends StatefulWidget {
     this.paintingStyle = PaintingStyle.stroke,
     this.backgroundWidget,
     this.ticks = 0,
+    this.interTicks,
     ticksLength,
     this.ticksWidth = 1,
     this.ticksOffset = 0,
@@ -717,6 +719,7 @@ class TimeRangePickerState extends State<TimeRangePicker>
                         widget.disabledColor ?? Colors.red.withOpacity(0.5),
                     paintingStyle: widget.paintingStyle,
                     ticks: widget.ticks,
+                    interTicks: widget.interTicks,
                     ticksColor: widget.ticksColor,
                     ticksLength: widget.ticksLength,
                     ticksWidth: widget.ticksWidth,

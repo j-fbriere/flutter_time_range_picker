@@ -27,6 +27,7 @@ class ClockPainter extends CustomPainter {
   late TextPainter _textPainter;
 
   int? ticks;
+  int? interTicks;
   double ticksOffset;
   double ticksLength;
   double ticksWidth;
@@ -62,6 +63,7 @@ class ClockPainter extends CustomPainter {
     required this.disabledColor,
     required this.paintingStyle,
     required this.ticks,
+    required this.interTicks,
     required this.ticksOffset,
     required this.ticksLength,
     required this.ticksWidth,
@@ -76,6 +78,7 @@ class ClockPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    //print('*** paint disabledStartAngle != null && disabledEndAngle != null : ${disabledStartAngle != null && disabledEndAngle != null}');
     var paint = Paint()
       ..style = paintingStyle
       ..strokeWidth = strokeWidth
@@ -97,10 +100,18 @@ class ClockPainter extends CustomPainter {
           rect, start, sweep, paintingStyle == PaintingStyle.fill, paint);
     }
 
-    drawTicks(
-      paint,
-      canvas,
-    );
+    if (ticks != null) {
+      drawTicks(
+        paint,
+        canvas,
+      );
+      if (interTicks != null) {
+        drawInterTicks(
+          paint,
+          canvas,
+        );
+      }
+    }
 
     paint.color = strokeColor;
     paint.strokeWidth = strokeWidth;
@@ -114,6 +125,11 @@ class ClockPainter extends CustomPainter {
 
       drawHandler(paint, canvas, ActiveTime.Start, start);
       drawHandler(paint, canvas, ActiveTime.End, end);
+    }
+    else if (startAngle != null) {
+      var start = normalizeAngle(startAngle!);
+      drawHandler(paint, canvas, ActiveTime.Start, start);
+      drawHandler(paint, canvas, ActiveTime.End, start);
     }
 
     drawLabels(
@@ -155,6 +171,20 @@ class ClockPainter extends CustomPainter {
     List.generate(ticks!, (i) => i + 1).forEach((i) {
       double angle = (360 / ticks!) * i * pi / 180 + offsetRad;
       canvas.drawLine(calcCoords(radius, radius, angle, r),
+        calcCoords(radius, radius, angle, r + ticksLength), paint);
+    });
+  }
+
+  void drawInterTicks(
+    Paint paint,
+    Canvas canvas,
+    ) {
+    List.generate(ticks! * interTicks!, (i) => i + 1).where((i) => i % interTicks! != 0).forEach((i) {
+      var r = radius + ticksOffset - strokeWidth / 2;
+      paint.color = ticksColor;
+      paint.strokeWidth = ticksWidth;
+      double angle = (360 / (ticks! * interTicks!)) * i * pi / 180 + offsetRad;
+      canvas.drawLine(calcCoords(radius, radius, angle, r + (ticksLength / 2)),
           calcCoords(radius, radius, angle, r + ticksLength), paint);
     });
   }
@@ -165,17 +195,15 @@ class ClockPainter extends CustomPainter {
   ) {
     labels.forEach((label) {
       drawText(
-          canvas,
-          paint,
-          label.text,
-          calcCoords(
-              radius, radius, label.angle + offsetRad, radius + labelOffset),
-          label.angle + offsetRad);
+        canvas,
+        paint,
+        label.text,
+        calcCoords(radius, radius, label.angle + offsetRad, radius + labelOffset),
+        label.angle + offsetRad);
     });
   }
 
-  void drawText(
-      Canvas canvas, Paint paint, String text, Offset position, double angle) {
+  void drawText(Canvas canvas, Paint paint, String text, Offset position, double angle) {
     angle = normalizeAngle(angle);
 
     TextSpan span = new TextSpan(
