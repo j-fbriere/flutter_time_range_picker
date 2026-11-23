@@ -1,10 +1,10 @@
 name: time_range_picker
 description: A time range picker for flutter. This widget let's you open a dialog to choose a timeframe with start and end time.
-version: 2.3.1
+#version: 2.3.1
+version: 3.0.0
 homepage: https://github.com/Chris1234567899/flutter_time_range_picker
 repository: https://github.com/Chris1234567899/flutter_time_range_picker
 issue_tracker: https://github.com/Chris1234567899/flutter_time_range_picker/issues
-
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -12,6 +12,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  material_ui: any
 
 dev_dependencies:
   flutter_test:
